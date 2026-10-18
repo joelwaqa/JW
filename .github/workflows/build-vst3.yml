@@ -1,0 +1,27 @@
+name: Build JAYWAY VST3
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+
+jobs:
+  build-windows-vst3:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Configure CMake
+        run: cmake -B build -DCMAKE_BUILD_TYPE=Release
+      - name: Build VST3
+        run: cmake --build build --config Release --verbose
+      - name: Upload VST3 artifact
+        uses: actions/upload-artifact@v5
+        with:
+          name: JAYWAY-Series-Channel-Strip-VST3-Windows
+          path: |
+            build/JAYWAY_Series_FabEQ_artefacts/Release/VST3/
+            build/**/VST3/
+            build/**/*.vst3
+          if-no-files-found: error
